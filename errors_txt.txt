@@ -1,0 +1,1 @@
+﻿error TS18003: No inputs were found in config file 'C:/dev/LudicPedagogy-Frontend/tsconfig.test.json'. Specified 'include' paths were '["tests"]' and 'exclude' paths were '[]'.

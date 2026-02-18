@@ -1,0 +1,229 @@
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px)
+    }
+
+    to {
+        opacity: 1;
+        transform: none
+    }
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(.8);
+        opacity: 0
+    }
+
+    65% {
+        transform: scale(1.06)
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0)
+    }
+
+    25% {
+        transform: translateX(-8px)
+    }
+
+    75% {
+        transform: translateX(8px)
+    }
+}
+
+@keyframes timerDrain {
+    from {
+        width: 100%
+    }
+
+    to {
+        width: 0%
+    }
+}
+
+@keyframes punchRight {
+    0% {
+        transform: translateX(0) rotate(0deg)
+    }
+
+    40% {
+        transform: translateX(60px) rotate(-8deg)
+    }
+
+    60% {
+        transform: translateX(-10px) rotate(4deg)
+    }
+
+    100% {
+        transform: translateX(0) rotate(0deg)
+    }
+}
+
+@keyframes punchLeft {
+    0% {
+        transform: translateX(0) rotate(0deg)
+    }
+
+    40% {
+        transform: translateX(-60px) rotate(8deg)
+    }
+
+    60% {
+        transform: translateX(10px) rotate(-4deg)
+    }
+
+    100% {
+        transform: translateX(0) rotate(0deg)
+    }
+}
+
+@keyframes flowerBloom {
+    0% {
+        transform: scale(.2) rotate(-30deg);
+        opacity: 0
+    }
+
+    60% {
+        transform: scale(1.15) rotate(5deg);
+        opacity: 1
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1
+    }
+}
+
+@keyframes flowerWilt {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1
+    }
+
+    40% {
+        transform: scale(.8) rotate(-20deg);
+        opacity: .6
+    }
+
+    100% {
+        transform: scale(.3) rotate(-45deg) translateY(20px);
+        opacity: 0
+    }
+}
+
+@keyframes starShoot {
+    0% {
+        transform: translateX(-40px) translateY(20px) rotate(30deg);
+        opacity: 0
+    }
+
+    30% {
+        opacity: 1
+    }
+
+    100% {
+        transform: translateX(80px) translateY(-40px) rotate(30deg);
+        opacity: 0
+    }
+}
+
+@keyframes starBurst {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 1
+    }
+
+    100% {
+        transform: scale(1.8) rotate(180deg);
+        opacity: 0
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0) translateY(20px)
+    }
+
+    70% {
+        transform: scale(1.1) translateY(-5px)
+    }
+
+    100% {
+        transform: scale(1) translateY(0)
+    }
+}
+
+@keyframes slideRight {
+    from {
+        transform: translateX(-20px);
+        opacity: 0
+    }
+
+    to {
+        transform: none;
+        opacity: 1
+    }
+}
+
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(139, 92, 246, .4)
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px rgba(139, 92, 246, 0)
+    }
+}
+
+@keyframes correctFlash {
+    0% {
+        background: #1a2e1a
+    }
+
+    50% {
+        background: #0d4a1a
+    }
+
+    100% {
+        background: #1a2e1a
+    }
+}
+
+@keyframes wrongFlash {
+    0% {
+        background: #2e1a1a
+    }
+
+    50% {
+        background: #4a0d0d
+    }
+
+    100% {
+        background: #2e1a1a
+    }
+}
+
+.fade-up {
+    animation: fadeUp .3s ease both
+}
+
+.pop {
+    animation: pop .35s cubic-bezier(.175, .885, .32, 1.275) both
+}
+
+.shake {
+    animation: shake .4s ease both
+}
