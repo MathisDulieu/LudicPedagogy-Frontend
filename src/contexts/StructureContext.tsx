@@ -1,25 +1,16 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
-
-interface Structure {
-    id: string;
-    name: string;
-    type?: string;
-}
-
-interface StructureContextType {
-    structure: Structure | null;
-    joinStructure: (structure: Structure) => void;
-    leaveStructure: () => void;
-}
-
-const StructureContext = createContext<StructureContextType | undefined>(
-    undefined,
-);
+import { useState, type ReactNode } from "react";
+import { StructureContext, type Structure } from "./useStructureContext";
 
 export function StructureProvider({ children }: { children: ReactNode }) {
     const [structure, setStructure] = useState<Structure | null>(() => {
         const stored = localStorage.getItem("structure");
-        return stored ? JSON.parse(stored) : null;
+        if (!stored) return null;
+        try {
+            return JSON.parse(stored);
+        } catch (e) {
+            console.error("Failed to parse stored structure", e);
+            return null;
+        }
     });
 
     function joinStructure(newStructure: Structure) {
@@ -39,12 +30,4 @@ export function StructureProvider({ children }: { children: ReactNode }) {
             {children}
         </StructureContext.Provider>
     );
-}
-
-export function useStructure() {
-    const context = useContext(StructureContext);
-    if (!context) {
-        throw new Error("useStructure must be used within StructureProvider");
-    }
-    return context;
 }

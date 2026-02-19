@@ -1,0 +1,71 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation [ref=e5]:
+    - generic [ref=e6]:
+      - link "LP LudicPedagogy" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e8]: LP
+        - generic [ref=e9]: LudicPedagogy
+      - generic [ref=e10]:
+        - link "Cours" [ref=e11] [cursor=pointer]:
+          - /url: /my-courses
+          - img [ref=e12]
+          - text: Cours
+        - link "Classement" [ref=e14] [cursor=pointer]:
+          - /url: /leaderboard
+          - img [ref=e15]
+          - text: Classement
+      - link "Connexion" [ref=e22] [cursor=pointer]:
+        - /url: /login
+        - button "Connexion" [ref=e23]
+  - main [ref=e24]:
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - button [ref=e29] [cursor=pointer]:
+            - img [ref=e30]
+          - generic [ref=e32]:
+            - heading "Atelier Ludique" [level=1] [ref=e33]
+            - paragraph [ref=e34]: Créez et gérez vos micro-jeux pédagogiques
+        - generic [ref=e35]:
+          - button "Exporter tout" [ref=e36] [cursor=pointer]:
+            - img [ref=e37]
+            - text: Exporter tout
+          - button "Paramètres" [ref=e39] [cursor=pointer]:
+            - img [ref=e40]
+            - text: Paramètres
+      - generic [ref=e43]:
+        - button "Tous (0)" [ref=e44] [cursor=pointer]
+        - button "⚡ Quiz Flash" [active] [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]: ⚡
+          - text: Quiz Flash
+        - button "🎮 Micro-Défi" [ref=e47] [cursor=pointer]:
+          - generic [ref=e48]: 🎮
+          - text: Micro-Défi
+        - button "⚖️ Vrai / Faux" [ref=e49] [cursor=pointer]:
+          - generic [ref=e50]: ⚖️
+          - text: Vrai / Faux
+        - button "✏️ Phrase à trous" [ref=e51] [cursor=pointer]:
+          - generic [ref=e52]: ✏️
+          - text: Phrase à trous
+        - button "🔗 Relier" [ref=e53] [cursor=pointer]:
+          - generic [ref=e54]: 🔗
+          - text: Relier
+        - button "📅 Chronologie" [ref=e55] [cursor=pointer]:
+          - generic [ref=e56]: 📅
+          - text: Chronologie
+        - button "🔎 Énigme Layton" [ref=e57] [cursor=pointer]:
+          - generic [ref=e58]: 🔎
+          - text: Énigme Layton
+        - button "🃏 Memory" [ref=e59] [cursor=pointer]:
+          - generic [ref=e60]: 🃏
+          - text: Memory
+        - button "🔃 Tri Logique" [ref=e61] [cursor=pointer]:
+          - generic [ref=e62]: 🔃
+          - text: Tri Logique
+      - button "Nouveau Jeu" [ref=e64] [cursor=pointer]:
+        - img [ref=e66]
+        - generic [ref=e67]: Nouveau Jeu
+```

@@ -44,72 +44,73 @@ export function EditorScreen({ game, onUpdate, onBack }: EditorScreenProps) {
 
     return (
         <div
-            className="fade-up"
             style={{
-                height: "100vh",
-                display: "grid",
-                gridTemplateColumns: "380px 1fr",
+                position: "fixed",
+                top: 64, // Height of the navbar
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: "flex",
                 overflow: "hidden",
+                zIndex: 40,
+                background: "#0d0c15",
             }}
         >
             {/* LEFT PANEL: EDITOR */}
             <div
                 style={{
-                    background: T.bg2,
-                    borderRight: `1px solid ${T.border}`,
+                    width: 380,
+                    flexShrink: 0,
+                    height: "100%",
                     display: "flex",
                     flexDirection: "column",
+                    borderRight: `1px solid ${T.border}`,
+                    zIndex: 10,
                 }}
             >
+                {/* Sidebar Scroll Area */}
                 <div
+                    className="custom-scrollbar"
                     style={{
-                        padding: "16px 20px",
-                        borderBottom: `1px solid ${T.border}`,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
+                        flex: 1,
+                        overflowY: "auto",
+                        padding: 24,
                     }}
                 >
-                    <button
-                        onClick={onBack}
-                        style={{
-                            background: "none",
-                            border: "none",
-                            color: T.muted,
-                            cursor: "pointer",
-                            padding: 4,
-                        }}
-                    >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <span
-                        style={{
-                            fontFamily: FD,
-                            fontWeight: 700,
-                            fontSize: 14,
-                        }}
-                    >
-                        Éditeur
-                    </span>
-                    <div
-                        style={{
-                            marginLeft: "auto",
-                            fontSize: 11,
-                            color: T.dim,
-                            fontFamily: FB,
-                            background: T.bg3,
-                            padding: "4px 8px",
-                            borderRadius: 6,
-                        }}
-                    >
-                        Auto-save
+                    {/* Back button and title */}
+                    <div style={{ marginBottom: 24 }}>
+                        <button
+                            onClick={onBack}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 8,
+                                color: T.muted,
+                                border: "none",
+                                background: "none",
+                                cursor: "pointer",
+                                fontFamily: FB,
+                                fontSize: 13,
+                                padding: 0,
+                                marginBottom: 4,
+                            }}
+                        >
+                            <ArrowLeft size={16} /> Retour
+                        </button>
+                        <h1
+                            style={{
+                                fontFamily: FD,
+                                fontSize: 18,
+                                color: "#fff",
+                            }}
+                        >
+                            {game.title || "Sans titre"}
+                        </h1>
                     </div>
-                </div>
 
-                <div style={{ flex: 1, overflowY: "auto", padding: 20 }}>
                     {EditorComp ? (
                         <EditorComp
-                            game={game}
+                            game={game as any}
                             update={update}
                             advOpen={advOpen}
                             setAdv={setAdv}
@@ -127,6 +128,7 @@ export function EditorScreen({ game, onUpdate, onBack }: EditorScreenProps) {
                     )}
                 </div>
 
+                {/* Sidebar Footer (Save Button) */}
                 <div
                     style={{
                         padding: 20,
@@ -134,21 +136,27 @@ export function EditorScreen({ game, onUpdate, onBack }: EditorScreenProps) {
                         background: T.bg2,
                     }}
                 >
-                    <Btn style={{ width: "100%", justifyContent: "center" }}>
-                        <Save size={16} /> Enregistrer
+                    <Btn
+                        style={{ width: "100%", justifyContent: "center" }}
+                        onClick={onBack}
+                    >
+                        <Save size={16} /> Enregistrer & Quitter
                     </Btn>
                 </div>
             </div>
 
-            {/* RIGHT PANEL: PREVIEW */}
+            {/* RIGHT PANEL: LIVE PREVIEW */}
             <div
                 style={{
-                    background: T.bg,
+                    flex: 1,
+                    height: "100%",
+                    overflowY: "auto",
+                    padding: 40,
+                    background: "#020617",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "center",
-                    padding: 40,
+                    minWidth: 0,
                     position: "relative",
                 }}
             >
@@ -193,7 +201,12 @@ export function EditorScreen({ game, onUpdate, onBack }: EditorScreenProps) {
                 </div>
 
                 <div
-                    style={{ width: "100%", maxWidth: 400, perspective: 1000 }}
+                    style={{
+                        width: "100%",
+                        maxWidth: 400,
+                        perspective: 1000,
+                        marginTop: 40,
+                    }}
                 >
                     <LivePreviewWrapper game={game} />
                 </div>

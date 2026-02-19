@@ -22,7 +22,7 @@ export function MemoryEditor({ game, update }: EditorProps<MemoryData>) {
     };
 
     return (
-        <div className="fade-up">
+        <div className="fade-up" style={{ paddingBottom: 100 }}>
             <div
                 style={{
                     marginBottom: 16,

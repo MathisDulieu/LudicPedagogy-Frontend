@@ -9,6 +9,7 @@ import { LeaderboardProvider } from "./contexts/LeaderboardContext";
 import { ProgressProvider } from "./contexts/ProgressContext";
 import { StructureProvider } from "./contexts/StructureContext";
 import { CourseProvider } from "./contexts/CourseContext";
+import { GameProvider } from "./contexts/GameContext";
 
 import Home from "./pages/Home.tsx";
 import RootLayout from "./layouts/RootLayout.tsx";
@@ -29,65 +30,70 @@ createRoot(document.getElementById("root")!).render(
         <BrowserRouter>
             <AuthProvider>
                 <CourseProvider>
-                    <LeaderboardProvider>
-                        <ProgressProvider>
-                            <StructureProvider>
-                                <Routes>
-                                    <Route element={<RootLayout />}>
-                                        <Route path="/" element={<Home />} />
-                                        <Route
-                                            path="/hub"
-                                            element={<GameHub />}
-                                        />
-                                        <Route
-                                            path="/leaderboard"
-                                            element={<Leaderboard />}
-                                        />
-                                        <Route
-                                            path="/profile"
-                                            element={<Profile />}
-                                        />
-                                        <Route
-                                            path="/my-courses"
-                                            element={<MyCourses />}
-                                        />
-                                        <Route
-                                            path="/catalog"
-                                            element={<CourseCatalog />}
-                                        />
-                                        <Route
-                                            path="/course/:courseId"
-                                            element={<CoursePage />}
-                                        />
-                                        <Route
-                                            path="/course-editor"
-                                            element={<CourseEditor />}
-                                        />
-                                        <Route
-                                            path="/course-editor/:courseId"
-                                            element={<CourseEditor />}
-                                        />
-                                        <Route
-                                            path="/game/:gameId"
-                                            element={<GamePage />}
-                                        />
-                                        <Route
-                                            path="/login"
-                                            element={<Login />}
-                                        />
-                                        <Route
-                                            path="/editor"
-                                            element={<GameEditor />}
-                                        />
-                                        <Route
-                                            path="/demo"
-                                            element={<Demo />}
-                                        />
-                                    </Route>
-                                </Routes>
-                            </StructureProvider>
-                        </ProgressProvider>
-                    </LeaderboardProvider>
+                    <GameProvider>
+                        <LeaderboardProvider>
+                            <ProgressProvider>
+                                <StructureProvider>
+                                    <Routes>
+                                        <Route element={<RootLayout />}>
+                                            <Route
+                                                path="/"
+                                                element={<Home />}
+                                            />
+                                            <Route
+                                                path="/hub"
+                                                element={<GameHub />}
+                                            />
+                                            <Route
+                                                path="/leaderboard"
+                                                element={<Leaderboard />}
+                                            />
+                                            <Route
+                                                path="/profile"
+                                                element={<Profile />}
+                                            />
+                                            <Route
+                                                path="/my-courses"
+                                                element={<MyCourses />}
+                                            />
+                                            <Route
+                                                path="/catalog"
+                                                element={<CourseCatalog />}
+                                            />
+                                            <Route
+                                                path="/course/:courseId"
+                                                element={<CoursePage />}
+                                            />
+                                            <Route
+                                                path="/course-editor"
+                                                element={<CourseEditor />}
+                                            />
+                                            <Route
+                                                path="/course-editor/:courseId"
+                                                element={<CourseEditor />}
+                                            />
+                                            <Route
+                                                path="/game/:gameId"
+                                                element={<GamePage />}
+                                            />
+                                            <Route
+                                                path="/login"
+                                                element={<Login />}
+                                            />
+                                            <Route
+                                                path="/editor"
+                                                element={<GameEditor />}
+                                            />
+                                            <Route
+                                                path="/demo"
+                                                element={<Demo />}
+                                            />
+                                        </Route>
+                                    </Routes>
+                                </StructureProvider>
+                            </ProgressProvider>
+                        </LeaderboardProvider>
+                    </GameProvider>
                 </CourseProvider>
             </AuthProvider>
         </BrowserRouter>

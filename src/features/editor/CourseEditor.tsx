@@ -16,7 +16,7 @@ import {
     ArrowDown,
     Columns2,
 } from "lucide-react";
-import { useCourses } from "../../contexts/CourseContext";
+import { useCourses } from "../../contexts/useCourseContext";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
 import { CoursePreview } from "./components/CoursePreview";
@@ -35,17 +35,27 @@ export default function CourseEditor() {
     const { getCourseById, addCourse, updateCourse } = useCourses();
 
     const [course, setCourse] = useState<Course>(() => {
-        // Try to load draft first
+        // 1. Try to load from context if courseId is present
+        if (courseId) {
+            const existing = getCourseById(courseId);
+            if (existing) return existing;
+        }
+
+        // 2. Try to load draft from localStorage
         const draft = localStorage.getItem("ludic-course-draft");
         if (draft) {
             try {
                 const parsed = JSON.parse(draft);
-                // Return draft if it's a new course or the correct one (we'll sync in useEffect if courseId is present)
-                return parsed;
+                // Only return draft if it's for a new course or matches the current courseId
+                if (!courseId || parsed.id === courseId) {
+                    return parsed;
+                }
             } catch (e) {
                 console.error("Failed to parse course draft", e);
             }
         }
+
+        // 3. Fallback to default empty course
         return {
             id: "",
             title: "Nouveau Cours",
@@ -68,15 +78,6 @@ export default function CourseEditor() {
     ); // sectionId_activityId
     const [showPreview, setShowPreview] = useState(false);
 
-    useEffect(() => {
-        if (courseId) {
-            const existing = getCourseById(courseId);
-            if (existing && existing.id !== course.id) {
-                setCourse(existing);
-            }
-        }
-    }, [courseId, getCourseById, course.id]);
-
     // Auto-save draft
     useEffect(() => {
         if (
@@ -88,11 +89,16 @@ export default function CourseEditor() {
     }, [course]);
 
     const handleSave = () => {
-        if (courseId) {
-            updateCourse(course);
+        const finalCourse = { ...course };
+
+        // Ensure the course has a valid ID if it's new
+        if (!courseId || !course.id) {
+            finalCourse.id = course.id || `course-${crypto.randomUUID()}`;
+            addCourse(finalCourse);
         } else {
-            addCourse(course);
+            updateCourse(finalCourse);
         }
+
         localStorage.removeItem("ludic-course-draft");
         alert("Cours sauvegardé !");
         navigate("/catalog");

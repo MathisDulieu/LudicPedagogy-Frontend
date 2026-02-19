@@ -1,126 +1,122 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { useState, useMemo, useCallback, type ReactNode } from "react";
 import type { Course } from "../types/course";
-
-interface CourseContextType {
-    courses: Course[];
-    addCourse: (course: Course) => void;
-    updateCourse: (course: Course) => void;
-    deleteCourse: (id: string) => void;
-    getCourseById: (id: string) => Course | undefined;
-}
-
-const DEFAULT_COURSES: Course[] = [
-    {
-        id: "binary-basics",
-        title: "Les Bases du Binaire",
-        description:
-            "Apprends à penser comme un ordinateur en comprenant le système binaire.",
-        difficulty: "Débutant",
-        duration: "2h",
-        image: "bg-emerald-500",
-        students: 124,
-        sections: [
-            {
-                id: "s1",
-                title: "Introduction",
-                activities: [
-                    {
-                        id: "a1",
-                        title: "Qu'est-ce que le binaire ?",
-                        type: "theory",
-                        content:
-                            "Le binaire est un système de comptage en base 2...",
-                    },
-                    {
-                        id: "a2",
-                        title: "Conversion Décimal -> Binaire",
-                        type: "game",
-                        gameId: "binary-slap",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        id: "hex-mastery",
-        title: "Maîtrise Hexadécimale",
-        description:
-            "Domine les conversions entre binaire, décimal et hexadécimal.",
-        difficulty: "Intermédiaire",
-        duration: "1.5h",
-        image: "bg-purple-500",
-        students: 85,
-        sections: [
-            {
-                id: "s2",
-                title: "L'Hexadécimal",
-                activities: [
-                    {
-                        id: "a3",
-                        title: "Pourquoi l'Hexa ?",
-                        type: "theory",
-                        content:
-                            "L'hexadécimal permet de condenser 4 bits en un seul caractère...",
-                    },
-                    {
-                        id: "a4",
-                        title: "Hex Flash Challenge",
-                        type: "game",
-                        gameId: "hex-flash",
-                    },
-                ],
-            },
-        ],
-    },
-];
-
-const CourseContext = createContext<CourseContextType | undefined>(undefined);
+import { DEFAULT_COURSES } from "../data/courses";
+import { CourseContext } from "./useCourseContext";
 
 export function CourseProvider({ children }: { children: ReactNode }) {
     const [courses, setCourses] = useState<Course[]>(() => {
         const stored = localStorage.getItem("courses");
-        return stored ? JSON.parse(stored) : DEFAULT_COURSES;
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) {
+                    // Filter out corrupt courses with empty IDs
+                    return parsed.filter((c: Course) => c && c.id);
+                }
+            } catch (e) {
+                console.error("Failed to parse stored courses", e);
+            }
+        }
+        return DEFAULT_COURSES;
     });
 
-    const addCourse = (course: Course) => {
-        const updated = [...courses, course];
-        setCourses(updated);
-        localStorage.setItem("courses", JSON.stringify(updated));
-    };
+    const addCourse = useCallback((course: Course) => {
+        setCourses((prev) => {
+            const updated = [...prev, course];
+            localStorage.setItem("courses", JSON.stringify(updated));
+            return updated;
+        });
+    }, []);
 
-    const updateCourse = (course: Course) => {
-        const updated = courses.map((c) => (c.id === course.id ? course : c));
-        setCourses(updated);
-        localStorage.setItem("courses", JSON.stringify(updated));
-    };
+    const updateCourse = useCallback((course: Course) => {
+        setCourses((prev) => {
+            const updated = prev.map((c) => (c.id === course.id ? course : c));
+            localStorage.setItem("courses", JSON.stringify(updated));
+            return updated;
+        });
+    }, []);
 
-    const deleteCourse = (id: string) => {
-        const updated = courses.filter((c) => c.id !== id);
-        setCourses(updated);
-        localStorage.setItem("courses", JSON.stringify(updated));
-    };
+    const deleteCourse = useCallback((id: string) => {
+        setCourses((prev) => {
+            const updated = prev.filter((c) => c.id !== id);
+            localStorage.setItem("courses", JSON.stringify(updated));
+            return updated;
+        });
+    }, []);
 
-    const getCourseById = (id: string) => courses.find((c) => c.id === id);
+    const getCourseById = useCallback(
+        (id: string) => courses.find((c) => c.id === id),
+        [courses],
+    );
+
+    const markActivityComplete = useCallback(
+        (courseId: string, activityId: string) => {
+            setCourses((prev) => {
+                const updated = prev.map((c) => {
+                    if (c.id !== courseId) return c;
+
+                    const updatedSections = c.sections.map((section) => ({
+                        ...section,
+                        activities: section.activities.map((activity) =>
+                            activity.id === activityId
+                                ? { ...activity, completed: true }
+                                : activity,
+                        ),
+                    }));
+
+                    // Recalculate global progress
+                    const totalActivities = updatedSections.reduce(
+                        (acc, s) => acc + s.activities.length,
+                        0,
+                    );
+                    const completedActivities = updatedSections.reduce(
+                        (acc, s) =>
+                            acc +
+                            s.activities.filter((a) => a.completed).length,
+                        0,
+                    );
+                    const progress =
+                        totalActivities > 0
+                            ? Math.round(
+                                  (completedActivities / totalActivities) * 100,
+                              )
+                            : 0;
+
+                    return {
+                        ...c,
+                        sections: updatedSections,
+                        progress,
+                    };
+                });
+                localStorage.setItem("courses", JSON.stringify(updated));
+                return updated;
+            });
+        },
+        [],
+    );
+
+    const value = useMemo(
+        () => ({
+            courses,
+            addCourse,
+            updateCourse,
+            deleteCourse,
+            getCourseById,
+            markActivityComplete,
+        }),
+        [
+            courses,
+            addCourse,
+            updateCourse,
+            deleteCourse,
+            getCourseById,
+            markActivityComplete,
+        ],
+    );
 
     return (
-        <CourseContext.Provider
-            value={{
-                courses,
-                addCourse,
-                updateCourse,
-                deleteCourse,
-                getCourseById,
-            }}
-        >
+        <CourseContext.Provider value={value}>
             {children}
         </CourseContext.Provider>
     );
-}
-
-export function useCourses() {
-    const context = useContext(CourseContext);
-    if (!context) {
-        throw new Error("useCourses must be used within CourseProvider");
-    }
-    return context;
 }

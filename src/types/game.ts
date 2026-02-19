@@ -18,7 +18,8 @@ export interface QCMData extends BaseGameData {
         q: string;
         image?: string | null;
         choices: string[];
-        answer: string;
+        answer: string | string[];
+        isMulti?: boolean;
     }[];
     showProgress?: boolean;
     shuffleChoices?: boolean;

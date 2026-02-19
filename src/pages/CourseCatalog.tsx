@@ -8,8 +8,8 @@ import {
     Play,
     GraduationCap,
 } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
-import { useCourses } from "../contexts/CourseContext";
+import { useAuth } from "../contexts/useAuthContext";
+import { useCourses } from "../contexts/useCourseContext";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 

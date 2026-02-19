@@ -31,7 +31,7 @@ export function SortEditor({ game, update }: EditorProps<SortData>) {
     };
 
     return (
-        <div className="fade-up">
+        <div className="fade-up" style={{ paddingBottom: 100 }}>
             <div
                 style={{
                     display: "grid",

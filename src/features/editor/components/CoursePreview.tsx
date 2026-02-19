@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
 import type { Course } from "../../../types/course";
+import { useCourses } from "../../../contexts/useCourseContext";
 
 interface CoursePreviewProps {
     course: Course;
 }
 
 export function CoursePreview({ course }: CoursePreviewProps) {
+    const { markActivityComplete } = useCourses();
     return (
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-slate-100">
             {/* Header */}
@@ -98,7 +100,7 @@ export function CoursePreview({ course }: CoursePreviewProps) {
                                                 activity.gameId &&
                                                 !activity.locked && (
                                                     <Link
-                                                        to={`/game/${activity.gameId}`}
+                                                        to={`/game/${activity.gameId}?courseId=${course.id}&activityId=${activity.id}`}
                                                     >
                                                         <Button
                                                             size="sm"
@@ -127,12 +129,20 @@ export function CoursePreview({ course }: CoursePreviewProps) {
                                                                 ? "ghost"
                                                                 : "primary"
                                                         }
-                                                        onClick={() =>
+                                                        onClick={() => {
+                                                            if (
+                                                                !activity.completed
+                                                            ) {
+                                                                markActivityComplete(
+                                                                    course.id,
+                                                                    activity.id,
+                                                                );
+                                                            }
                                                             alert(
                                                                 activity.content ||
                                                                     "Aucun contenu",
-                                                            )
-                                                        }
+                                                            );
+                                                        }}
                                                     >
                                                         {activity.completed
                                                             ? "Relire"

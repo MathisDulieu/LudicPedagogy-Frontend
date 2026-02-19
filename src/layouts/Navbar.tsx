@@ -7,8 +7,8 @@ import {
     Settings,
     LayoutGrid,
 } from "lucide-react";
-import { useProgress } from "../contexts/ProgressContext";
-import { useAuth } from "../contexts/AuthContext";
+import { useProgress } from "../contexts/useProgressContext";
+import { useAuth } from "../contexts/useAuthContext";
 import { Button } from "../components/ui/Button";
 
 export function Navbar() {

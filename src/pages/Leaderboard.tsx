@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useLeaderboard } from "../contexts/LeaderboardContext";
+import { useLeaderboard } from "../contexts/useLeaderboardContext";
 
 export default function Leaderboard() {
     const { scores } = useLeaderboard();

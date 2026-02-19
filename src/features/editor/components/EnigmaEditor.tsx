@@ -22,7 +22,7 @@ export function EnigmaEditor({ game, update }: EditorProps<EnigmaData>) {
     };
 
     return (
-        <div className="fade-up">
+        <div className="fade-up" style={{ paddingBottom: 100 }}>
             <SectionTitle emoji="📝" title="Scénario" />
             <Input
                 label="Contexte narratif"

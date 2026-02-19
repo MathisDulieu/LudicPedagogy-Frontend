@@ -1,23 +1,5 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
-
-export type UserRole = "student" | "teacher" | "admin";
-
-interface User {
-    username: string;
-    level: number;
-    xp: number;
-    role: UserRole;
-    enrolledCourses: string[]; // Track IDs of enrolled courses
-}
-
-interface AuthContextType {
-    user: User | null;
-    login: (username: string, role?: UserRole) => void;
-    logout: () => void;
-    enrollInCourse: (courseId: string) => void;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { useState, type ReactNode } from "react";
+import { AuthContext, type User, type UserRole } from "./useAuthContext";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(() => {
@@ -30,7 +12,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 parsed.enrolledCourses = [];
             }
             return parsed;
-        } catch (e) {
+        } catch {
             return null;
         }
     });
@@ -70,12 +52,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             {children}
         </AuthContext.Provider>
     );
-}
-
-export function useAuth() {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth must be used within AuthProvider");
-    }
-    return context;
 }

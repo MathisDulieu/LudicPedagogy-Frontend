@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useCourses } from "../contexts/CourseContext";
+import { useCourses } from "../contexts/useCourseContext";
 import { CoursePreview } from "../features/editor/components/CoursePreview";
 
 export default function CoursePage() {

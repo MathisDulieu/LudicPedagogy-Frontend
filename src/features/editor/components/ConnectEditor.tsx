@@ -32,7 +32,14 @@ export function ConnectEditor({
     };
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+                paddingBottom: 100,
+            }}
+        >
             <div
                 style={{
                     display: "grid",

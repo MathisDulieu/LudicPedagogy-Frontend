@@ -1,9 +1,16 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import GameShell from "../features/games/GameShell";
+import { useGames } from "../contexts/useGameContext";
+import { useCourses } from "../contexts/useCourseContext";
+import type { GameData } from "../types/game";
 
 import HexFlash from "../features/games/hex-flash/HexFlash";
 import TerminalRiddle from "../features/games/terminal-riddle/TerminalRiddle";
 import BinarySlap from "../features/games/binary-slap/SlapGame.tsx";
+
+// Game components for custom types
+import QCMGame from "../features/games/qcm/QCMGame";
+// Note: We might need to add other game components as they are implemented
 
 const GAME_MAP: Record<string, React.ComponentType<any>> = {
     "hex-flash": HexFlash,
@@ -11,9 +18,33 @@ const GAME_MAP: Record<string, React.ComponentType<any>> = {
     "binary-slap": BinarySlap,
 };
 
+const TYPE_MAP: Record<string, React.ComponentType<any>> = {
+    qcm: QCMGame,
+    // Add other types here
+};
+
 export default function GamePage() {
     const { gameId } = useParams<{ gameId: string }>();
-    const GameComponent = gameId ? GAME_MAP[gameId] : null;
+    const [searchParams] = useSearchParams();
+    const { getGameById } = useGames();
+    const { markActivityComplete } = useCourses();
+
+    const courseId = searchParams.get("courseId");
+    const activityId = searchParams.get("activityId");
+
+    // 1. Try static map
+    let GameComponent = (
+        gameId ? GAME_MAP[gameId] : null
+    ) as React.ComponentType<any> | null;
+    let gameData: GameData | null = null;
+
+    // 2. Try dynamic games from context
+    if (!GameComponent && gameId) {
+        gameData = getGameById(gameId) || null;
+        if (gameData) {
+            GameComponent = TYPE_MAP[gameData.type] as React.ComponentType<any>;
+        }
+    }
 
     if (!GameComponent) {
         return (
@@ -33,14 +64,28 @@ export default function GamePage() {
         );
     }
 
+    // Default data for static games that expect it
+    const activeData =
+        gameData ||
+        ({
+            id: gameId || "static",
+            type: gameId || "static",
+            title: gameId || "Static Game",
+        } as GameData);
+
     return (
         <GameShell
             duration={gameId === "hex-flash" ? 20 : 60}
-            onGameEnd={(score) => {
+            onGameEnd={(score: number) => {
                 console.log("Score final :", score);
+                if (courseId && activityId) {
+                    markActivityComplete(courseId, activityId);
+                }
             }}
         >
-            {({ addScore }) => <GameComponent onScore={addScore} />}
+            {({ addScore }) => (
+                <GameComponent onScore={addScore} data={activeData} />
+            )}
         </GameShell>
     );
 }

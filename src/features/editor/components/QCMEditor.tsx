@@ -40,6 +40,7 @@ export function QCMEditor({
                     image: null,
                     choices: ["", "", "", ""],
                     answer: "",
+                    isMulti: false,
                 },
             ],
         });
@@ -60,8 +61,12 @@ export function QCMEditor({
         if (!q) return;
         const choices = q.choices.filter((_, j) => j !== i);
         // Update answer if the deleted choice was the answer, or if answer becomes invalid
-        const newAnswer =
-            q.choices[i] === q.answer ? (choices[0] ?? "") : q.answer;
+        let newAnswer = q.answer;
+        if (q.isMulti && Array.isArray(q.answer)) {
+            newAnswer = q.answer.filter((a) => a !== q.choices[i]);
+        } else if (q.choices[i] === q.answer) {
+            newAnswer = choices[0] ?? "";
+        }
         upQ(qid, { choices, answer: newAnswer });
     };
 
@@ -69,12 +74,54 @@ export function QCMEditor({
         const q = game.questions.find((q) => q.id === qid);
         if (!q) return;
         const choices = q.choices.map((c, j) => (j === i ? v : c));
-        const newAnswer = q.choices[i] === q.answer ? v : q.answer;
+        let newAnswer = q.answer;
+        if (q.isMulti && Array.isArray(q.answer)) {
+            newAnswer = q.answer.map((a) => (a === q.choices[i] ? v : a));
+        } else if (q.choices[i] === q.answer) {
+            newAnswer = v;
+        }
         upQ(qid, { choices, answer: newAnswer });
     };
 
+    const toggleMulti = (qid: string, val: boolean) => {
+        const q = game.questions.find((q) => q.id === qid);
+        if (!q) return;
+        // Convert answer format when toggling
+        let newAnswer = q.answer;
+        if (val) {
+            newAnswer = typeof q.answer === "string" ? [q.answer] : q.answer;
+        } else {
+            newAnswer = Array.isArray(q.answer)
+                ? (q.answer[0] ?? "")
+                : q.answer;
+        }
+        upQ(qid, { isMulti: val, answer: newAnswer });
+    };
+
+    const toggleAnswer = (qid: string, choice: string) => {
+        const q = game.questions.find((q) => q.id === qid);
+        if (!q || choice === "") return;
+
+        if (q.isMulti) {
+            const current = Array.isArray(q.answer) ? q.answer : [q.answer];
+            const next = current.includes(choice)
+                ? current.filter((a) => a !== choice)
+                : [...current, choice];
+            upQ(qid, { answer: next });
+        } else {
+            upQ(qid, { answer: choice });
+        }
+    };
+
     return (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+                paddingBottom: 100,
+            }}
+        >
             <div
                 style={{
                     display: "grid",
@@ -158,9 +205,21 @@ export function QCMEditor({
                                 textTransform: "none",
                             }}
                         >
-                            (✓ = bonne réponse)
+                            (
+                            {q.isMulti
+                                ? "✓ = réponses valides"
+                                : "✓ = bonne réponse"}
+                            )
                         </span>
                     </Label>
+
+                    <div style={{ marginBottom: 16 }}>
+                        <Toggle
+                            label="Plusieurs réponses possibles"
+                            value={!!q.isMulti}
+                            onChange={(v) => toggleMulti(q.id, v)}
+                        />
+                    </div>
 
                     <div
                         style={{
@@ -180,8 +239,14 @@ export function QCMEditor({
                                 }}
                             >
                                 <AnswerBtn
-                                    active={q.answer === c && c !== ""}
-                                    onClick={() => upQ(q.id, { answer: c })}
+                                    active={
+                                        q.isMulti
+                                            ? Array.isArray(q.answer) &&
+                                              q.answer.includes(c) &&
+                                              c !== ""
+                                            : q.answer === c && c !== ""
+                                    }
+                                    onClick={() => toggleAnswer(q.id, c)}
                                 />
                                 <Input
                                     value={c}
@@ -190,14 +255,22 @@ export function QCMEditor({
                                         upC(q.id, ci, e.target.value)
                                     }
                                     style={{
-                                        border:
-                                            q.answer === c && c !== ""
-                                                ? `1.5px solid ${T.green}`
-                                                : undefined,
-                                        background:
-                                            q.answer === c && c !== ""
-                                                ? T.greenLo
-                                                : undefined,
+                                        border: (
+                                            q.isMulti
+                                                ? Array.isArray(q.answer) &&
+                                                  q.answer.includes(c)
+                                                : q.answer === c
+                                        )
+                                            ? `1.5px solid ${T.green}`
+                                            : undefined,
+                                        background: (
+                                            q.isMulti
+                                                ? Array.isArray(q.answer) &&
+                                                  q.answer.includes(c)
+                                                : q.answer === c
+                                        )
+                                            ? T.greenLo
+                                            : undefined,
                                     }}
                                 />
                                 {q.choices.length > 2 && (

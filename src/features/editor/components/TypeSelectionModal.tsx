@@ -17,13 +17,13 @@ export function TypeSelectionModal({
             style={{
                 position: "fixed",
                 inset: 0,
-                background: "rgba(0,0,0,.8)",
-                backdropFilter: "blur(8px)",
-                zIndex: 100,
+                background: "rgba(0,0,0,.85)",
+                backdropFilter: "blur(12px)",
+                zIndex: 9999,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: 20,
+                padding: "40px 20px",
             }}
             onClick={onClose}
         >
@@ -100,6 +100,8 @@ export function TypeSelectionModal({
                         gap: 16,
                         overflowY: "auto",
                         paddingRight: 4,
+                        flex: 1,
+                        minHeight: 0,
                     }}
                 >
                     {GAME_TYPES.map((t) => (
@@ -119,6 +121,7 @@ export function TypeSelectionModal({
                                 transition: "all .2s",
                                 position: "relative",
                                 overflow: "hidden",
+                                opacity: 1,
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.borderColor = t.color;

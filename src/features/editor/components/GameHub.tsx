@@ -38,7 +38,11 @@ export function GameHub({
     return (
         <div
             className="fade-up"
-            style={{ maxWidth: 1200, margin: "0 auto", padding: 40 }}
+            style={{
+                maxWidth: 1200,
+                margin: "0 auto",
+                padding: "80px 40px 40px 40px",
+            }}
         >
             <div
                 style={{

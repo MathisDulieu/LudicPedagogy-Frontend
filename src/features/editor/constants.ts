@@ -23,8 +23,8 @@ export const T = {
     shadowLg: "0 8px 32px rgba(0,0,0,.5)",
 };
 
-export const FD = "Unbounded, sans-serif";
-export const FB = "Plus Jakarta Sans, sans-serif";
+export const FD = "'Unbounded', sans-serif";
+export const FB = "'Plus Jakarta Sans', sans-serif";
 
 // ── ANIMATION SKINS ──────────────────────────────────────────────────────────
 export const SKINS = [

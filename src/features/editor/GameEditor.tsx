@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { GameData } from "../../types/game";
+import { useGames } from "../../contexts/useGameContext";
 import { GameHub } from "./components/GameHub";
 import { EditorScreen } from "./components/EditorScreen";
 import { ExportModal } from "./components/ExportModal";
 import { T } from "./constants";
 import "./animations.css";
 
-// Inject fonts dynamically as in original file, or rely on index.html?
-// Original file injected it. Let's do it here just in case, but usually better in index.html.
+// Inject fonts dynamically
 const fl = document.createElement("link");
 fl.rel = "stylesheet";
 fl.href =
@@ -17,50 +17,45 @@ document.head.appendChild(fl);
 
 export default function GameEditor() {
     const navigate = useNavigate();
-    // Initial state from localStorage or empty array?
-    // Original file used hardcoded defaults inside sub-components or empty state?
-    // Original file had `const [games,setGames]=useState([])`
-
-    // We can try to load from localStorage for persistence during dev
-    const [games, setGames] = useState<GameData[]>(() => {
-        try {
-            const saved = localStorage.getItem("ludic-games");
-            return saved ? JSON.parse(saved) : [];
-        } catch {
-            return [];
-        }
-    });
+    const { games, addGame, updateGame, deleteGame } = useGames();
 
     const [editingId, setEditingId] = useState<string | null>(null);
     const [showExport, setShowExport] = useState(false);
 
-    // Persistence
+    // Prevent body scroll when editor is open
     useEffect(() => {
-        localStorage.setItem("ludic-games", JSON.stringify(games));
-    }, [games]);
+        if (editingId) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, [editingId]);
 
     const handleCreate = (newGame: GameData) => {
-        setGames((prev) => [...prev, newGame]);
+        addGame(newGame);
         setEditingId(newGame.id);
     };
 
     const handleDelete = (id: string) => {
         if (!confirm("Supprimer ce jeu ?")) return;
-        setGames((prev) => prev.filter((g) => g.id !== id));
+        deleteGame(id);
         if (editingId === id) setEditingId(null);
     };
 
     const handleUpdate = (updatedGame: GameData) => {
-        setGames((prev) =>
-            prev.map((g) => (g.id === updatedGame.id ? updatedGame : g)),
-        );
+        updateGame(updatedGame);
     };
 
     const handleBack = () => {
         setEditingId(null);
     };
 
-    const activeGame = editingId ? games.find((g) => g.id === editingId) : null;
+    const activeGame = editingId
+        ? games.find((g: GameData) => g.id === editingId)
+        : null;
 
     if (activeGame) {
         return (

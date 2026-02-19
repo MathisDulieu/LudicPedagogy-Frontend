@@ -93,9 +93,9 @@ export default function WarioGame({ data, onScore }: GameProps<WarioData>) {
                     </h2>
 
                     <div className="grid grid-cols-2 gap-4 flex-1">
-                        {currentOptions.map((opt) => (
+                        {currentOptions.map((opt, index) => (
                             <button
-                                key={opt}
+                                key={index}
                                 onClick={() => handleTap(opt)}
                                 className="bg-slate-800 border-b-4 border-slate-950 hover:bg-slate-700 active:border-b-0 active:translate-y-1 rounded-xl text-xl font-bold text-white transition-all p-4"
                             >
