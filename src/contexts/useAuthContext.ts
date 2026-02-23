@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-export type UserRole = "student" | "teacher" | "admin";
+export type UserRole = "student" | "teacher" | "org_owner" | "admin";
 
 export interface User {
     username: string;

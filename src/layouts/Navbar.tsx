@@ -23,6 +23,40 @@ export function Navbar() {
         { path: "/leaderboard", label: "Classement", icon: Trophy },
     ];
 
+    // Role-specific extra links shown after the standard links
+    const roleLinks =
+        user?.role === "teacher"
+            ? [
+                  {
+                      path: "/teacher/courses",
+                      label: "Mes cours",
+                      icon: BookOpen,
+                  },
+                  {
+                      path: "/teacher/sessions",
+                      label: "Sessions",
+                      icon: LayoutGrid,
+                  },
+                  { path: "/teacher/students", label: "Élèves", icon: User },
+              ]
+            : user?.role === "org_owner"
+              ? [
+                    {
+                        path: "/org/dashboard",
+                        label: "Organisation",
+                        icon: LayoutGrid,
+                    },
+                ]
+              : user?.role === "admin"
+                ? [
+                      {
+                          path: "/admin/organizations",
+                          label: "Admin",
+                          icon: Settings,
+                      },
+                  ]
+                : [];
+
     const secondaryLinks = [
         { path: "/hub", label: "Bibliothèque de Jeux", icon: LayoutGrid },
         { path: "/editor", label: "Éditeur", icon: Settings },
@@ -48,9 +82,31 @@ export function Navbar() {
 
                 {/* Primary Nav */}
                 <div className="hidden md:flex items-center gap-1 mx-6">
-                    {navLinks.map((link) => {
+                    {/* Standard links: only for students */}
+                    {(!user || user.role === "student") &&
+                        navLinks.map((link) => {
+                            const Icon = link.icon;
+                            const active = isActive(link.path);
+                            return (
+                                <Link
+                                    key={link.path}
+                                    to={link.path}
+                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center gap-2
+                                    ${
+                                        active
+                                            ? "bg-slate-800 text-white border-b-2 border-primary-500 rounded-b-none"
+                                            : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                                    }`}
+                                >
+                                    <Icon size={18} />
+                                    {link.label}
+                                </Link>
+                            );
+                        })}
+                    {/* Role-specific links */}
+                    {roleLinks.map((link) => {
                         const Icon = link.icon;
-                        const active = isActive(link.path);
+                        const active = location.pathname.startsWith(link.path);
                         return (
                             <Link
                                 key={link.path}
@@ -110,16 +166,12 @@ export function Navbar() {
 
                             <div className="flex items-center gap-2 ml-2">
                                 <Link to="/profile">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-10 w-10 p-0 rounded-full bg-slate-800 border-slate-700 overflow-hidden"
+                                    <button
+                                        className="h-10 w-10 p-0 rounded-full bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center text-white font-bold text-sm shadow-md hover:opacity-90 transition-opacity"
+                                        title={`Profil — ${user.username}`}
                                     >
-                                        <User
-                                            size={20}
-                                            className="text-primary-400"
-                                        />
-                                    </Button>
+                                        {user.username[0].toUpperCase()}
+                                    </button>
                                 </Link>
                                 <Button
                                     onClick={handleLogout}

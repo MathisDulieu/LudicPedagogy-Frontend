@@ -2,7 +2,7 @@ import { useParams, Link, useSearchParams } from "react-router-dom";
 import GameShell from "../features/games/GameShell";
 import { useGames } from "../contexts/useGameContext";
 import { useCourses } from "../contexts/useCourseContext";
-import type { GameData } from "../types/game";
+import type { GameData, BaseGameData, GameProps } from "../types/game";
 
 import HexFlash from "../features/games/hex-flash/HexFlash";
 import TerminalRiddle from "../features/games/terminal-riddle/TerminalRiddle";
@@ -12,14 +12,20 @@ import BinarySlap from "../features/games/binary-slap/SlapGame.tsx";
 import QCMGame from "../features/games/qcm/QCMGame";
 // Note: We might need to add other game components as they are implemented
 
-const GAME_MAP: Record<string, React.ComponentType<any>> = {
-    "hex-flash": HexFlash,
-    "terminal-riddle": TerminalRiddle,
-    "binary-slap": BinarySlap,
+const GAME_MAP: Record<string, React.ComponentType<GameProps<BaseGameData>>> = {
+    "hex-flash": HexFlash as unknown as React.ComponentType<
+        GameProps<BaseGameData>
+    >,
+    "terminal-riddle": TerminalRiddle as unknown as React.ComponentType<
+        GameProps<BaseGameData>
+    >,
+    "binary-slap": BinarySlap as unknown as React.ComponentType<
+        GameProps<BaseGameData>
+    >,
 };
 
-const TYPE_MAP: Record<string, React.ComponentType<any>> = {
-    qcm: QCMGame,
+const TYPE_MAP: Record<string, React.ComponentType<GameProps<BaseGameData>>> = {
+    qcm: QCMGame as unknown as React.ComponentType<GameProps<BaseGameData>>,
     // Add other types here
 };
 
@@ -35,14 +41,16 @@ export default function GamePage() {
     // 1. Try static map
     let GameComponent = (
         gameId ? GAME_MAP[gameId] : null
-    ) as React.ComponentType<any> | null;
+    ) as React.ComponentType<GameProps<BaseGameData>> | null;
     let gameData: GameData | null = null;
 
     // 2. Try dynamic games from context
     if (!GameComponent && gameId) {
         gameData = getGameById(gameId) || null;
         if (gameData) {
-            GameComponent = TYPE_MAP[gameData.type] as React.ComponentType<any>;
+            GameComponent = TYPE_MAP[gameData.type] as React.ComponentType<
+                GameProps<BaseGameData>
+            >;
         }
     }
 
